@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace SignalRChatApp
 {
-    public class ConnectionMapping<T>:IConnection<T>
+    public class ConnectionMapping:IConnection
     {
-        private readonly Dictionary<T, HashSet<string>> _connections =
-           new Dictionary<T, HashSet<string>>();
-
+        public List<UserConnection> _connections = new List<UserConnection>();
+         
         public int Count
         {
             get
@@ -18,55 +17,20 @@ namespace SignalRChatApp
             }
         }
 
-        public void Add(T key, string connectionId)
+        public void Add(string userId, string connectionId)
         {
-            lock (_connections)
-            {
-                HashSet<string> connections;
-                if (!_connections.TryGetValue(key, out connections))
-                {
-                    connections = new HashSet<string>();
-                    _connections.Add(key, connections);
-                }
-
-                lock (connections)
-                {
-                    connections.Add(connectionId);
-                }
-            }
+            _connections.Add(new UserConnection { UserId = userId , ConnectionId = connectionId });
         }
 
-        public IEnumerable<string> GetConnections(T key)
+        public string GetConnections(string userId)
         {
-            HashSet<string> connections;
-            if (_connections.TryGetValue(key, out connections))
-            {
-                return connections;
-            }
-
-            return Enumerable.Empty<string>();
+            return _connections.Find(u=>u.UserId == userId).ConnectionId;
         }
 
-        public void Remove(T key, string connectionId)
+        public void Remove(string userId, string connectionId)
         {
-            lock (_connections)
-            {
-                HashSet<string> connections;
-                if (!_connections.TryGetValue(key, out connections))
-                {
-                    return;
-                }
-
-                lock (connections)
-                {
-                    connections.Remove(connectionId);
-
-                    if (connections.Count == 0)
-                    {
-                        _connections.Remove(key);
-                    }
-                }
-            }
+            _connections.Remove(new UserConnection { UserId = userId, ConnectionId = connectionId });
+            
         }
     }
 }

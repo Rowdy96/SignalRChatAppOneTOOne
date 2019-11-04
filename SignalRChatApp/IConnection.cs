@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace SignalRChatApp
 {
-    public interface IConnection<T>
+    public interface IConnection
     {
-       void Add(T key, string connectionId);
-       IEnumerable<string> GetConnections(T key);
-        void Remove(T key, string connectionId);
+       void Add(string userId, string connectionId);
+       string GetConnections(string userId);
+       void Remove(string userId, string connectionId);
     }
 }

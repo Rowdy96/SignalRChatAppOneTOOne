@@ -40,7 +40,7 @@ namespace SignalRChatApp
             options.UseSqlServer(Configuration.GetConnectionString("ChatAppContext")));
             services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<ChatAppContext>();
             services.AddSignalR();
-            services.AddSingleton<IConnection<string>, ConnectionMapping<string>>();
+            services.AddSingleton<IConnection, ConnectionMapping>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
